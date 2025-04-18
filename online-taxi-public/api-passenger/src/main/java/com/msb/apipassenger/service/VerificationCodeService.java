@@ -3,10 +3,12 @@ package com.msb.apipassenger.service;
 import com.msb.apipassenger.remote.ServicepassengerClient;
 import com.msb.apipassenger.remote.ServicevericationClient;
 import com.msb.internalcommon.constant.CommonStatusEnum;
+import com.msb.internalcommon.constant.IdentityConstant;
 import com.msb.internalcommon.dto.ResponseResult;
 import com.msb.internalcommon.request.VerificationCodeDTO;
 import com.msb.internalcommon.responese.NumberCodeResponese;
 import com.msb.internalcommon.responese.TokenResponse;
+import com.msb.internalcommon.util.JwtUtils;
 import io.netty.util.internal.StringUtil;
 import net.sf.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
@@ -81,7 +83,10 @@ public class VerificationCodeService {
         verificationCodeDTO.setPassengerPhone(passengerPhone);
         servicepassengerClient.loginOrRegistry(verificationCodeDTO);
 
-        //4.登录成功，颁发token，响应
+        //4.颁发token
+        JwtUtils.generatorToken(passengerPhone, IdentityConstant.IDENTITY_PASSENGER);
+
+        //5.登录成功，响应
         TokenResponse tokenResponse = new TokenResponse();
         tokenResponse.setToken("token value");
         return ResponseResult.success(tokenResponse);

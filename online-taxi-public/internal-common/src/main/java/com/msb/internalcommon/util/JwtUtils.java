@@ -4,6 +4,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTCreator;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.msb.internalcommon.dto.TokenResult;
 import org.junit.Test;
 
 import java.util.Calendar;
@@ -14,16 +15,17 @@ import java.util.Map;
 public class JwtUtils {
     //盐
     private static final String SIGN = "JFSSJ@$$@%";
-    private static final String JWT_KEY = "passengerPhone";
-
+    private static final String JWT_PHONE = "passengerPhone";
+    private static final String JWT_IDENTITY = "identity"; //1是乘客，2是司机
     /**
      * 生成token
      * @param passengerPhone
      * @return
      */
-    public static String generatorToken(String passengerPhone){
+    public static String generatorToken(String passengerPhone,String identity){
         Map<String, String> map = new HashMap<>();
-        map.put(JWT_KEY,passengerPhone);
+        map.put(JWT_PHONE,passengerPhone);
+        map.put(JWT_IDENTITY,identity);
         //创建builder
         JWTCreator.Builder builder = JWT.create();
         //设置token过期时间并整合过期时间
@@ -40,19 +42,27 @@ public class JwtUtils {
 
     /**
      * 解析Token
-     * @param passengerPhone
+     * @param token
      * @return
      */
-    public static String parseToken(String passengerPhone){
-        DecodedJWT verify = JWT.require(Algorithm.HMAC256(SIGN)).build().verify(passengerPhone);
-        return verify.getClaim(JWT_KEY).toString();
+    public static TokenResult parseToken(String token){
+        DecodedJWT verify = JWT.require(Algorithm.HMAC256(SIGN)).build().verify(token);
+        String passengerPhone = verify.getClaim(JWT_PHONE).toString();
+        String identity = verify.getClaim(JWT_IDENTITY).toString();
+        //将passengerPhone和identity封装到Tokenresult对象中返回
+        TokenResult tokenResult = new TokenResult();
+        tokenResult.setPassengerPhone(passengerPhone);
+        tokenResult.setIdentity(identity);
+        return tokenResult;
     }
 
     @Test
     public void test() {
-        String s = generatorToken("123456789");
-        System.out.println(s);
-        String s1 = parseToken(s);
-        System.out.println(s1);
+        String s = generatorToken("123456789","1");
+        System.out.println("token:" + s);
+        System.out.println("解析");
+        TokenResult s1 = parseToken(s);
+        System.out.println("passengerPhone:" + s1.getPassengerPhone());
+        System.out.println("identity:" + s1.getIdentity());
     }
 }
