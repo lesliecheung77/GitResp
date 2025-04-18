@@ -84,11 +84,9 @@ public class VerificationCodeService {
         servicepassengerClient.loginOrRegistry(verificationCodeDTO);
 
         //4.颁发token
-        JwtUtils.generatorToken(passengerPhone, IdentityConstant.IDENTITY_PASSENGER);
+        String token = JwtUtils.generatorToken(passengerPhone, IdentityConstant.IDENTITY_PASSENGER);
 
         //5.登录成功，响应
-        TokenResponse tokenResponse = new TokenResponse();
-        tokenResponse.setToken("token value");
-        return ResponseResult.success(tokenResponse);
+        return ResponseResult.success(token);
     }
 }
