@@ -1,8 +1,10 @@
 package com.msb.apipassenger.service;
 
+import com.msb.apipassenger.remote.ServicepassengerClient;
 import com.msb.apipassenger.remote.ServicevericationClient;
 import com.msb.internalcommon.constant.CommonStatusEnum;
 import com.msb.internalcommon.dto.ResponseResult;
+import com.msb.internalcommon.request.VerificationCodeDTO;
 import com.msb.internalcommon.responese.NumberCodeResponese;
 import com.msb.internalcommon.responese.TokenResponse;
 import io.netty.util.internal.StringUtil;
@@ -22,6 +24,9 @@ public class VerificationCodeService {
 
     @Autowired
     StringRedisTemplate stringRedisTemplate;
+
+    @Autowired
+    ServicepassengerClient servicepassengerClient;
 
     private String numberCodeProfix = "VerificationCodeService-code-";
 
@@ -72,10 +77,11 @@ public class VerificationCodeService {
             return ResponseResult.fail(CommonStatusEnum.VERIFICATION_CODE_ERROR.getCode(),CommonStatusEnum.VERIFICATION_CODE_ERROR.getValue());
         }
         //3.判断用户是否存在，进行对应注册登录操作
+        VerificationCodeDTO verificationCodeDTO = new VerificationCodeDTO();
+        verificationCodeDTO.setPassengerPhone(passengerPhone);
+        servicepassengerClient.loginOrRegistry(verificationCodeDTO);
 
-        //4.登录成功，颁发token
-
-        //5.响应
+        //4.登录成功，颁发token，响应
         TokenResponse tokenResponse = new TokenResponse();
         tokenResponse.setToken("token value");
         return ResponseResult.success(tokenResponse);

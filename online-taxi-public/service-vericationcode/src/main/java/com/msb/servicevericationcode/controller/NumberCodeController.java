@@ -20,6 +20,7 @@ public class NumberCodeController {
         //把验证码赋值给NumberCodeResponese对象
         NumberCodeResponese response = new NumberCodeResponese();
         response.setNumberCode(codeNumber);
+  
 
         return ResponseResult.success(response);
     }
