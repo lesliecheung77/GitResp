@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
+import com.msb.internalcommon.constant.TokenTypeConstant
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -58,7 +59,7 @@ public class JwtInterceptor implements HandlerInterceptor {
             //从redis中取得token，首先需要获得tokenKey
             String passengerPhone = tokenResult.getPassengerPhone();
             String identity = tokenResult.getIdentity();
-            String tokenKey = RedisPrefixUtils.generateTokenKey(passengerPhone, identity);
+            String tokenKey = RedisPrefixUtils.generateTokenKey(passengerPhone, identity,TokenTypeConstant.JWT_TOKEN_ACCESSTOKEN);
             String tokenForRedis = stringRedisTemplate.opsForValue().get(tokenKey);
 
             //判断tokenForRedis是否为空

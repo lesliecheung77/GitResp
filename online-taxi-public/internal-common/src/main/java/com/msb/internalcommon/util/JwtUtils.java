@@ -4,6 +4,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTCreator;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.msb.internalcommon.constant.TokenTypeConstant;
 import com.msb.internalcommon.dto.TokenResult;
 import org.junit.Test;
 
@@ -17,15 +18,17 @@ public class JwtUtils {
     private static final String SIGN = "JFSSJ@$$@%";
     private static final String JWT_PHONE = "passengerPhone";
     private static final String JWT_IDENTITY = "identity"; //1是乘客，2是司机
+    private static final String JWT_TOKEN_TYPE = "tokenType";
     /**
      * 生成token
      * @param passengerPhone
      * @return
      */
-    public static String generatorToken(String passengerPhone,String identity){
+    public static String generatorToken(String passengerPhone,String identity,String tokenType){
         Map<String, String> map = new HashMap<>();
         map.put(JWT_PHONE,passengerPhone);
         map.put(JWT_IDENTITY,identity);
+        map.put(JWT_TOKEN_TYPE,tokenType);
         //创建builder
         JWTCreator.Builder builder = JWT.create();
         //设置token过期时间并整合过期时间
@@ -60,7 +63,7 @@ public class JwtUtils {
 
     @Test
     public void test() {
-        String s = generatorToken("17790118534","1");
+        String s = generatorToken("17790118534","1", TokenTypeConstant.JWT_TOKEN_ACCESSTOKEN);
         System.out.println("token:" + s);
         System.out.println("解析");
         TokenResult s1 = parseToken(s);
