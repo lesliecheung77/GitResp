@@ -37,7 +37,7 @@ public class JwtInterceptor implements HandlerInterceptor {
         
         try {
             //解析token,得到手机号和身份标识
-            tokenResult = JwtUtils.parseToken(token);
+
         }catch (SignatureVerificationException e){
             errorMessage = "token sign error";
             result = false;
@@ -63,14 +63,9 @@ public class JwtInterceptor implements HandlerInterceptor {
             String tokenForRedis = stringRedisTemplate.opsForValue().get(tokenKey);
 
             //判断tokenForRedis是否为空
-            if(StringUtils.isBlank(tokenForRedis)){
+            if((StringUtils.isBlank(tokenForRedis)) || (!token.trim().equals(tokenForRedis.trim()))){
                 errorMessage = "token invalid";
                 result = false;
-            }else {
-                if(!token.trim().equals(tokenForRedis.trim())){
-                    errorMessage = "token invalid";
-                    result = false;
-                }
             }
         }
 

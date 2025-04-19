@@ -11,7 +11,7 @@ public class RedisPrefixUtils {
     public static String tokenProfix = "VerificationCodeService-token-";
 
     /**
-     * 将验证码存入redis的key
+     * 生成验证码存入redis的key
      * @param passengerPhone
      * @return
      */
