@@ -30,7 +30,10 @@ public class VerificationCodeService {
     @Autowired
     ServicepassengerClient servicepassengerClient;
 
+    //验证码的key前缀
     private String numberCodeProfix = "VerificationCodeService-code-";
+    //token的key前缀
+    private String tokenProfix = "VerificationCodeService-token-";
 
     /**
      * 获取验证码
@@ -44,7 +47,7 @@ public class VerificationCodeService {
         int numberCode = numberCodeResponse.getData().getNumberCode();
         System.out.println("生成的验证码:" + numberCode);
 
-        //2.存入redis,key,value,ttl(过期时间)
+        //2.将验证码存入redis,key,value,ttl(过期时间)
         String key = generateKey(passengerPhone);
         stringRedisTemplate.opsForValue().set(key,numberCode+"",2, TimeUnit.MINUTES);
         //3.通过短信服务商，将对应的验证码发送到手机上。阿里短信服务，腾讯短信通，华信，容联
@@ -61,6 +64,9 @@ public class VerificationCodeService {
         return numberCodeProfix + passengerPhone;
     }
 
+    public String generateTokenKey(String passengerPhone,String identity) {
+        return numberCodeProfix + passengerPhone + "-" + identity;
+    }
     /**
      * 校验验证码
      * @param passengerPhone 手机号
@@ -83,10 +89,14 @@ public class VerificationCodeService {
         verificationCodeDTO.setPassengerPhone(passengerPhone);
         servicepassengerClient.loginOrRegistry(verificationCodeDTO);
 
-        //4.颁发token
+        //4.颁发token，不应该使用魔法值，应该使用常量
         String token = JwtUtils.generatorToken(passengerPhone, IdentityConstant.IDENTITY_PASSENGER);
 
-        //5.登录成功，响应
+        //5.将生成的token存入redis
+        String tokenKey = generateTokenKey(passengerPhone,IdentityConstant.IDENTITY_PASSENGER);
+        stringRedisTemplate.opsForValue().set(tokenKey,token,30, TimeUnit.DAYS);
+
+        //6.登录成功，响应
         return ResponseResult.success(token);
     }
 }

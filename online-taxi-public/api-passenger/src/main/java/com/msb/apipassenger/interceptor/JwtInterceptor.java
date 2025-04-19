@@ -22,9 +22,10 @@ public class JwtInterceptor implements HandlerInterceptor {
         //定义错误提示信息和状态标识
         String errorMessage = "default error message!";
         boolean result = true;
-        //解析token
+
         try {
-            TokenResult tokenResult = JwtUtils.parseToken(token);
+            //解析token
+            JwtUtils.parseToken(token);
         }catch (SignatureVerificationException e){
             errorMessage = "token sign error";
             result = false;
@@ -41,7 +42,9 @@ public class JwtInterceptor implements HandlerInterceptor {
 
         if (!result){
             PrintWriter writer = response.getWriter();
-            writer.print(JSONObject.fromObject(ResponseResult.fail(errorMessage).toString()));
+            writer.print(JSONObject.fromObject(ResponseResult.fail(errorMessage)).toString());
         }
+
+        return result;
     }
 }

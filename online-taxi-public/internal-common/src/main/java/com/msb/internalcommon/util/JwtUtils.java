@@ -32,7 +32,9 @@ public class JwtUtils {
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.DATE, 1);
         Date time = calendar.getTime();
-        builder.withExpiresAt(time);
+        //整合过期时间，交给redis去管理，此处就不需要了
+        //builder.withExpiresAt(time);
+
         //整合map
         map.forEach((k, v) -> {builder.withClaim(k,v);});
         //生成token
@@ -58,7 +60,7 @@ public class JwtUtils {
 
     @Test
     public void test() {
-        String s = generatorToken("123456789","1");
+        String s = generatorToken("17790118534","1");
         System.out.println("token:" + s);
         System.out.println("解析");
         TokenResult s1 = parseToken(s);
