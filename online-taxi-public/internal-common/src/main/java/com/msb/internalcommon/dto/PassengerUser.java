@@ -20,5 +20,5 @@ public class PassengerUser {
 
     private byte state;
 
-    //private String profilePhoto;
+    private String profilePhoto;
 }

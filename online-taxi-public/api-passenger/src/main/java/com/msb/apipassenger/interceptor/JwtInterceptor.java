@@ -34,36 +34,22 @@ public class JwtInterceptor implements HandlerInterceptor {
         String errorMessage = "default error message!";
         boolean result = true;
         TokenResult tokenResult = new TokenResult();
-        
-        try {
-            //解析token,得到手机号和身份标识
 
-        }catch (SignatureVerificationException e){
-            errorMessage = "token sign error";
-            result = false;
-        }catch (TokenExpiredException e){
-            errorMessage = "token time out";
-            result = false;
-        }catch (AlgorithmMismatchException e){
-            errorMessage = "AlgorithmMismatchException error";
-            result = false;
-        }catch (Exception e){
+        //解析token,得到手机号和身份标识
+        tokenResult = JwtUtils.checkTokne(token);
+
+        if (tokenResult == null) {
             errorMessage = "token invalid";
             result = false;
-        }
-
-        if(tokenResult == null){
-            errorMessage = "token invalid";
-            result = false;
-        }else {
+        } else {
             //从redis中取得token，首先需要获得tokenKey
             String passengerPhone = tokenResult.getPassengerPhone();
             String identity = tokenResult.getIdentity();
-            String tokenKey = RedisPrefixUtils.generateTokenKey(passengerPhone, identity,TokenTypeConstant.JWT_TOKEN_ACCESSTOKEN);
+            String tokenKey = RedisPrefixUtils.generateTokenKey(passengerPhone, identity, TokenTypeConstant.JWT_TOKEN_ACCESSTOKEN);
             String tokenForRedis = stringRedisTemplate.opsForValue().get(tokenKey);
 
             //判断tokenForRedis是否为空
-            if((StringUtils.isBlank(tokenForRedis)) || (!token.trim().equals(tokenForRedis.trim()))){
+            if ((StringUtils.isBlank(tokenForRedis)) || (!token.trim().equals(tokenForRedis.trim()))) {
                 errorMessage = "token invalid";
                 result = false;
             }
@@ -71,7 +57,7 @@ public class JwtInterceptor implements HandlerInterceptor {
 
 
         //将前端请求中传入的token和从redis取得的token比较
-        if (!result){
+        if (!result) {
             PrintWriter writer = response.getWriter();
             writer.print(JSONObject.fromObject(ResponseResult.fail(errorMessage)).toString());
         }
