@@ -18,6 +18,7 @@
         <module>service-passenger-user</module>
         <module>service-vericationcode</module>
         <module>api-passenger</module>
+        <module>service-price</module>
 
     </modules>
 

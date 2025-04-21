@@ -1,8 +1,8 @@
-package com.msb.apipassenger.controller;
+package com.msb.controller;
 
-import com.msb.apipassenger.service.ForecastPriceService;
 import com.msb.internalcommon.dto.ResponseResult;
 import com.msb.internalcommon.request.ForecastPriceDto;
+import com.msb.service.ForecastPriceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class ForecastPriceController {
     @Autowired
     ForecastPriceService forecastPriceService;
+
     @PostMapping("/forecast-price")
     public ResponseResult getForecastPrice(@RequestBody ForecastPriceDto forecastPriceDto) {
 
