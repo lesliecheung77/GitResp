@@ -19,6 +19,7 @@
         <module>service-vericationcode</module>
         <module>api-passenger</module>
         <module>service-price</module>
+        <module>service-map</module>
 
     </modules>
 
