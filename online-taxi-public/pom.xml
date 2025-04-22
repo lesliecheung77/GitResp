@@ -20,6 +20,7 @@
         <module>api-passenger</module>
         <module>service-price</module>
         <module>service-map</module>
+        <module>service-driver-user</module>
 
     </modules>
 
