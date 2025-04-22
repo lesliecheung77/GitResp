@@ -4,6 +4,7 @@ import com.msb.internalcommon.constant.MapConfig;
 import com.msb.internalcommon.constant.CommonStatusEnum;
 import com.msb.internalcommon.dto.DicDistrict;
 import com.msb.internalcommon.dto.ResponseResult;
+import com.msb.mapper.DicDistrictMapper;
 import com.msb.remote.MapDicDistrictClient;
 import com.msb.remote.MapserviceClient;
 import net.sf.json.JSONArray;
@@ -15,7 +16,7 @@ import org.springframework.stereotype.Service;
 public class DicDistrictService {
 
     @Autowired
-    private MapserviceClient mapserviceClient;
+    private DicDistrictMapper dicDistrictMapper;
 
     @Autowired
     private MapDicDistrictClient mapDicDistrictClient;
@@ -39,7 +40,7 @@ public class DicDistrictService {
             String countryParentAddressCode = "0";
             String countryLevel = countryJsonObject.getString(MapConfig.LEVEL);
 
-            //insertDicDistrict(countryAddressCode, countryAddressName, countryLevel, countryParentAddressCode);
+            insertDicDistrict(countryAddressCode, countryAddressName, countryLevel, countryParentAddressCode);
 
             JSONArray proviceJsonArray = countryJsonObject.getJSONArray(MapConfig.DISTRICTS);
             for (int p = 0; p < proviceJsonArray.size(); p++) {
@@ -49,7 +50,7 @@ public class DicDistrictService {
                 String proviceParentAddressCode = countryAddressCode;
                 String proviceLevel = proviceJsonObject.getString(MapConfig.LEVEL);
 
-                //insertDicDistrict(proviceAddressCode, proviceAddressName, proviceLevel, proviceParentAddressCode);
+                insertDicDistrict(proviceAddressCode, proviceAddressName, proviceLevel, proviceParentAddressCode);
 
                 JSONArray cityArray = proviceJsonObject.getJSONArray(MapConfig.DISTRICTS);
                 for (int city = 0; city < cityArray.size(); city++) {
@@ -59,7 +60,7 @@ public class DicDistrictService {
                     String cityParentAddressCode = proviceAddressCode;
                     String cityLevel = cityJsonObject.getString(MapConfig.LEVEL);
 
-                    //insertDicDistrict(cityAddressCode,cityAddressName,cityLevel,cityParentAddressCode);
+                    insertDicDistrict(cityAddressCode, cityAddressName, cityLevel, cityParentAddressCode);
 
                     JSONArray districtArray = cityJsonObject.getJSONArray(MapConfig.DISTRICTS);
                     for (int d = 0; d < districtArray.size(); d++) {
@@ -73,7 +74,7 @@ public class DicDistrictService {
                             continue;
                         }
 
-                        //insertDicDistrict(districtAddressCode,districtAddressName,districtLevel,districtParentAddressCode);
+                        insertDicDistrict(districtAddressCode, districtAddressName, districtLevel, districtParentAddressCode);
 
                     }
                 }
@@ -85,31 +86,31 @@ public class DicDistrictService {
         return ResponseResult.success("");
     }
 
-//    public void insertDicDistrict(String addressCode, String addressName,String level ,String parentAddressCode){
-//        // 数据库对象
-//        DicDistrict district = new DicDistrict();
-//        district.setAddressCode(addressCode);
-//        district.setAddressName(addressName);
-//        int levelInt = generateLevel(level);
-//        district.setLevel(levelInt);
-//
-//        district.setParentAddressCode(parentAddressCode);
-//
-//        // 插入数据库
-//        dicDistrictMapper.insert(district);
-//    }
-//
-//    public int generateLevel(String level){
-//        int levelInt = 0;
-//        if (level.trim().equals("country")){
-//            levelInt = 0;
-//        }else if(level.trim().equals("province")){
-//            levelInt = 1;
-//        }else if(level.trim().equals("city")){
-//            levelInt = 2;
-//        }else if(level.trim().equals("district")){
-//            levelInt = 3;
-//        }
-//        return levelInt;
-//    }
+    public void insertDicDistrict(String addressCode, String addressName, String level, String parentAddressCode) {
+        // 数据库对象
+        DicDistrict district = new DicDistrict();
+        district.setAddressCode(addressCode);
+        district.setAddressName(addressName);
+        int levelInt = generateLevel(level);
+        district.setLevel(levelInt);
+
+        district.setParentAddressCode(parentAddressCode);
+
+        // 插入数据库
+        dicDistrictMapper.insert(district);
+    }
+
+    public int generateLevel(String level) {
+        int levelInt = 0;
+        if (level.trim().equals("country")) {
+            levelInt = 0;
+        } else if (level.trim().equals("province")) {
+            levelInt = 1;
+        } else if (level.trim().equals("city")) {
+            levelInt = 2;
+        } else if (level.trim().equals("district")) {
+            levelInt = 3;
+        }
+        return levelInt;
+    }
 }
