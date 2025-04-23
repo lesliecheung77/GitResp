@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
  * @since 2022-07-28
  */
 @Data
-public class Car implements Serializable {
+public class DriverCar implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
