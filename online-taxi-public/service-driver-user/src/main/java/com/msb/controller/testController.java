@@ -12,6 +12,6 @@ public class testController {
     private DriverUserService driverUserService;
     @GetMapping("/test")
     public ResponseResult test() {
-        return driverUserService.DriverUserService();
+        return driverUserService.testDriverUserService();
     }
 }
