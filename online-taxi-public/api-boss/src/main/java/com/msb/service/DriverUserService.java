@@ -15,4 +15,9 @@ public class DriverUserService {
         driverUserClient.addDriverUser(driverUser);
         return ResponseResult.success("Driver User added successfully");
     }
+
+    public ResponseResult<DriverUser> updateDriverUser(DriverUser driverUser) {
+        driverUserClient.updateDriverUser(driverUser);
+        return ResponseResult.success("Driver User updated successfully");
+    }
 }

@@ -10,4 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 public interface DriverUserClient {
     @PostMapping("/users")
     public ResponseResult<DriverUser> addDriverUser(@RequestBody DriverUser driverUser);
+
+    @PostMapping("/updateUsers")
+    public ResponseResult<DriverUser> updateDriverUser(@RequestBody DriverUser driverUser);
 }

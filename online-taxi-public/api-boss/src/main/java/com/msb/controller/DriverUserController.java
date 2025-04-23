@@ -18,4 +18,9 @@ public class DriverUserController {
     public ResponseResult addDriverUser(@RequestBody DriverUser driverUser) {
         return driverUserService.addDriverUser(driverUser);
     }
+
+    @PostMapping("/update-user")
+    public ResponseResult updateDriverUser(@RequestBody DriverUser driverUser) {
+        return driverUserService.updateDriverUser(driverUser);
+    }
 }

@@ -12,8 +12,14 @@ import org.springframework.web.bind.annotation.RestController;
 public class DriverController {
     @Autowired
     private DriverUserService driverUserService;
+
     @PostMapping("/users")
     public ResponseResult addDriver(@RequestBody DriverUser driverUser) {
         return driverUserService.addDriverUser(driverUser);
+    }
+
+    @PostMapping("/updateUsers")
+    public ResponseResult updateDriver(@RequestBody DriverUser driverUser) {
+        return driverUserService.updateDriverUser(driverUser);
     }
 }
