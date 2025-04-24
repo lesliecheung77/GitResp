@@ -1,5 +1,6 @@
 package com.msb.controller;
 
+import com.msb.internalcommon.dto.DriverCar;
 import com.msb.internalcommon.dto.DriverUser;
 import com.msb.internalcommon.dto.ResponseResult;
 import com.msb.service.DriverUserService;
@@ -22,5 +23,10 @@ public class DriverUserController {
     @PostMapping("/update-user")
     public ResponseResult updateDriverUser(@RequestBody DriverUser driverUser) {
         return driverUserService.updateDriverUser(driverUser);
+    }
+
+    @PostMapping("/add-Car")
+    public ResponseResult addCar(@RequestBody DriverCar driverCar){
+        return driverUserService.addCar(driverCar);
     }
 }

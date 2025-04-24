@@ -14,8 +14,14 @@ import org.springframework.web.bind.annotation.RestController;
 public class DriverCarBindingController {
     @Autowired
     private DriverCarBindingService driverCarBindingService;
+
     @PostMapping("/bind")
     public ResponseResult bindDriverCar(@RequestBody DriverCarBindingRelationship driverCarBindingRelationship){
         return driverCarBindingService.bindDriverCar(driverCarBindingRelationship);
+    }
+
+    @PostMapping("/unbind")
+    public ResponseResult unbindDriverCar(@RequestBody DriverCarBindingRelationship driverCarBindingRelationship){
+        return driverCarBindingService.unbindDriverCar(driverCarBindingRelationship);
     }
 }
