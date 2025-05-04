@@ -15,6 +15,7 @@ import com.msb.internalcommon.request.OrderRequest;
 //import com.msb.internalcommon.responese.OrderDriverResponse;
 //import com.msb.internalcommon.responese.TerminalResponse;
 //import com.msb.internalcommon.responese.TrsearchResponse;
+import com.msb.internalcommon.request.PriceRuleIsNewRequest;
 import com.msb.internalcommon.util.RedisPrefixUtils;
 //import com.msb.serviceorder.mapper.OrderInfoMapper;
 //import com.msb.serviceorder.remote.ServiceDriverUserClient;
@@ -22,6 +23,7 @@ import com.msb.internalcommon.util.RedisPrefixUtils;
 //import com.msb.serviceorder.remote.ServicePriceClient;
 //import com.msb.serviceorder.remote.ServiceSsePushClient;
 import com.msb.mapper.OrderInfoMapper;
+import com.msb.remote.ServicePriceClient;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -56,7 +58,20 @@ public class OrderInfoService {
     @Autowired
     OrderInfoMapper orderInfoMapper;
 
+    @Autowired
+    ServicePriceClient servicePriceClient;
+
     public ResponseResult add(OrderRequest orderRequest) {
+        //判断是否为最新版本
+        PriceRuleIsNewRequest priceRuleIsNewRequest = new PriceRuleIsNewRequest();
+        priceRuleIsNewRequest.setFareType(orderRequest.getFareType());
+        priceRuleIsNewRequest.setFareVersion(orderRequest.getFareVersion());
+        ResponseResult<Boolean> aNew = servicePriceClient.isNew(priceRuleIsNewRequest);
+
+        if(!(aNew.getData())){
+            return ResponseResult.fail(CommonStatusEnum.PRICE_RULE_CHANGED.getCode(),CommonStatusEnum.PRICE_RULE_CHANGED.getValue());
+        }
+
         OrderInfo orderInfo = new OrderInfo();
         BeanUtils.copyProperties(orderRequest,orderInfo);
 
@@ -68,10 +83,9 @@ public class OrderInfoService {
         orderInfoMapper.insert(orderInfo);
         return ResponseResult.success(orderInfo);
     }
-//
-//    @Autowired
-//    ServicePriceClient servicePriceClient;
-//
+
+
+
 //    @Autowired
 //    ServiceDriverUserClient serviceDriverUserClient;
 //
