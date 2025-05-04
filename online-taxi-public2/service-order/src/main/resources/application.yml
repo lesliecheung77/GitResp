@@ -10,5 +10,9 @@ spring:
     url: jdbc:mysql://localhost:3306/service-order?characterEncoding=utf-8&serverTimezone=GMT%2B8
     username: root
     password: root
+  redis:
+    host: 192.168.127.10
+    port: 6379
+    database: 0
   application:
     name: service-order

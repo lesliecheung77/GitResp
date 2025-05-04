@@ -7,8 +7,12 @@ public class RedisPrefixUtils {
 
     //验证码的key前缀
     public static String numberCodeProfix = "VerificationCodeService-code-";
+
     //token的key前缀
     public static String tokenProfix = "VerificationCodeService-token-";
+
+    // 黑名单设备号
+    public static String blackDeviceCodePrefix = "black-device-";
 
     /**
      * 生成验证码存入redis的key

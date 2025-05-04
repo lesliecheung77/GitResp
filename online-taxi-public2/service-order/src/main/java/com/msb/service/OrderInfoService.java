@@ -61,17 +61,24 @@ public class OrderInfoService {
     @Autowired
     ServicePriceClient servicePriceClient;
 
+    @Autowired
+    StringRedisTemplate stringRedisTemplate;
+
     public ResponseResult add(OrderRequest orderRequest) {
-        //判断是否为最新版本
+        //判断当前计价规则是否为最新版本
         PriceRuleIsNewRequest priceRuleIsNewRequest = new PriceRuleIsNewRequest();
         priceRuleIsNewRequest.setFareType(orderRequest.getFareType());
         priceRuleIsNewRequest.setFareVersion(orderRequest.getFareVersion());
         ResponseResult<Boolean> aNew = servicePriceClient.isNew(priceRuleIsNewRequest);
-
         if(!(aNew.getData())){
             return ResponseResult.fail(CommonStatusEnum.PRICE_RULE_CHANGED.getCode(),CommonStatusEnum.PRICE_RULE_CHANGED.getValue());
         }
-        // 判断乘客 是否有进行中的订单
+
+        //需要判断当前下单的设备是否是黑名单设备
+        if (isBlackDevice(orderRequest)) {
+            return ResponseResult.fail(CommonStatusEnum.DEVICE_IS_BLACK.getCode(), CommonStatusEnum.DEVICE_IS_BLACK.getValue());
+        }
+        // 判断当前乘客是否有进行中的订单
         if (isPassengerOrderGoingon(orderRequest.getPassengerId()) > 0){
             return ResponseResult.fail(CommonStatusEnum.ORDER_GOING_ON.getCode(),CommonStatusEnum.ORDER_GOING_ON.getValue());
         }
@@ -110,7 +117,30 @@ public class OrderInfoService {
 
         return validOrderNumber;
     }
-
+    /**
+     * 是否是黑名单
+     * @param orderRequest
+     * @return
+     */
+    private boolean isBlackDevice(OrderRequest orderRequest) {
+        String deviceCode = orderRequest.getDeviceCode();
+        // 生成key
+        String deviceCodeKey = RedisPrefixUtils.blackDeviceCodePrefix + deviceCode;
+        Boolean aBoolean = stringRedisTemplate.hasKey(deviceCodeKey);
+        if (aBoolean){
+            String s = stringRedisTemplate.opsForValue().get(deviceCodeKey);
+            int i = Integer.parseInt(s);
+            if (i >= 2){
+                // 当前设备超过下单次数
+                return true;
+            }else {
+                stringRedisTemplate.opsForValue().increment(deviceCodeKey);
+            }
+        }else {
+            stringRedisTemplate.opsForValue().setIfAbsent(deviceCodeKey,"1",1L, TimeUnit.HOURS);
+        }
+        return false;
+    }
 
 
 
