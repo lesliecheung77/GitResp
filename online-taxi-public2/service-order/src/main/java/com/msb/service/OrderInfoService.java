@@ -78,6 +78,12 @@ public class OrderInfoService {
         if (isBlackDevice(orderRequest)) {
             return ResponseResult.fail(CommonStatusEnum.DEVICE_IS_BLACK.getCode(), CommonStatusEnum.DEVICE_IS_BLACK.getValue());
         }
+
+        // 判断：下单的城市和计价规则是否正常
+        if(!isPriceRuleExists(orderRequest)){
+            return ResponseResult.fail(CommonStatusEnum.CITY_SERVICE_NOT_SERVICE.getCode(),CommonStatusEnum.CITY_SERVICE_NOT_SERVICE.getValue());
+        }
+
         // 判断当前乘客是否有进行中的订单
         if (isPassengerOrderGoingon(orderRequest.getPassengerId()) > 0){
             return ResponseResult.fail(CommonStatusEnum.ORDER_GOING_ON.getCode(),CommonStatusEnum.ORDER_GOING_ON.getValue());
@@ -142,6 +148,25 @@ public class OrderInfoService {
         return false;
     }
 
+    /**
+     * 计价规则是否存在
+     * @param orderRequest
+     * @return
+     */
+    private boolean isPriceRuleExists(OrderRequest orderRequest){
+        String fareType = orderRequest.getFareType();
+        int index = fareType.indexOf("$");
+        String cityCode = fareType.substring(0, index);
+        String vehicleType = fareType.substring(index + 1);
+
+        PriceRule priceRule = new PriceRule();
+        priceRule.setCityCode(cityCode);
+        priceRule.setVehicleType(vehicleType);
+
+        ResponseResult<Boolean> booleanResponseResult = servicePriceClient.ifPriceExists(priceRule);
+        return booleanResponseResult.getData();
+
+    }
 
 
 
@@ -396,25 +421,7 @@ public class OrderInfoService {
 //
 //    }
 //
-//    /**
-//     * 计价规则是否存在
-//     * @param orderRequest
-//     * @return
-//     */
-//    private boolean isPriceRuleExists(OrderRequest orderRequest){
-//        String fareType = orderRequest.getFareType();
-//        int index = fareType.indexOf("$");
-//        String cityCode = fareType.substring(0, index);
-//        String vehicleType = fareType.substring(index + 1);
-//
-//        PriceRule priceRule = new PriceRule();
-//        priceRule.setCityCode(cityCode);
-//        priceRule.setVehicleType(vehicleType);
-//
-//        ResponseResult<Boolean> booleanResponseResult = servicePriceClient.ifPriceExists(priceRule);
-//        return booleanResponseResult.getData();
-//
-//    }
+
 //
 //    /**
 //     * 是否是黑名单

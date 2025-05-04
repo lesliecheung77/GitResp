@@ -61,15 +61,13 @@ public class PriceRuleController {
         return priceRuleService.isNew(priceRuleIsNewRequest.getFareType(),priceRuleIsNewRequest.getFareVersion());
     }
 
-
-
-//    /**
-//     * 判断该城市和对应车型的计价规则是否存在
-//     * @param priceRule
-//     * @return
-//     */
-//    @PostMapping("/if-exists")
-//    public ResponseResult<Boolean> ifExists(@RequestBody PriceRule priceRule){
-//        return priceRuleService.ifExists(priceRule);
-//    }
+    /**
+     * 判断该城市和对应车型的计价规则是否存在
+     * @param priceRule
+     * @return
+     */
+    @PostMapping("/if-exists")
+    public ResponseResult<Boolean> ifExists(@RequestBody PriceRule priceRule){
+        return priceRuleService.ifExists(priceRule);
+    }
 }
