@@ -71,6 +71,10 @@ public class OrderInfoService {
         if(!(aNew.getData())){
             return ResponseResult.fail(CommonStatusEnum.PRICE_RULE_CHANGED.getCode(),CommonStatusEnum.PRICE_RULE_CHANGED.getValue());
         }
+        // 判断乘客 是否有进行中的订单
+        if (isPassengerOrderGoingon(orderRequest.getPassengerId()) > 0){
+            return ResponseResult.fail(CommonStatusEnum.ORDER_GOING_ON.getCode(),CommonStatusEnum.ORDER_GOING_ON.getValue());
+        }
 
         OrderInfo orderInfo = new OrderInfo();
         BeanUtils.copyProperties(orderRequest,orderInfo);
@@ -83,6 +87,32 @@ public class OrderInfoService {
         orderInfoMapper.insert(orderInfo);
         return ResponseResult.success(orderInfo);
     }
+
+    /**
+     * 判断是否有 业务中的订单
+     * @param passengerId
+     * @return
+     */
+    private int isPassengerOrderGoingon(Long passengerId){
+        // 判断有正在进行的订单不允许下单
+        QueryWrapper<OrderInfo> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("passenger_id",passengerId);
+        queryWrapper.and(wrapper->wrapper.eq("order_status",OrderConstants.ORDER_START)
+                .or().eq("order_status",OrderConstants.DRIVER_RECEIVE_ORDER)
+                .or().eq("order_status",OrderConstants.DRIVER_TO_PICK_UP_PASSENGER)
+                .or().eq("order_status",OrderConstants.DRIVER_ARRIVED_DEPARTURE)
+                .or().eq("order_status",OrderConstants.PICK_UP_PASSENGER)
+                .or().eq("order_status",OrderConstants.PASSENGER_GETOFF)
+                .or().eq("order_status",OrderConstants.TO_START_PAY)
+        );
+
+        Integer validOrderNumber = orderInfoMapper.selectCount(queryWrapper);
+
+        return validOrderNumber;
+    }
+
+
+
 
 
 
