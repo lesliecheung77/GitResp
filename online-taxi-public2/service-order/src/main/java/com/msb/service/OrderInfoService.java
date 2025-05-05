@@ -23,6 +23,7 @@ import com.msb.internalcommon.util.RedisPrefixUtils;
 //import com.msb.serviceorder.remote.ServicePriceClient;
 //import com.msb.serviceorder.remote.ServiceSsePushClient;
 import com.msb.mapper.OrderInfoMapper;
+import com.msb.remote.ServiceDriverUserClient;
 import com.msb.remote.ServicePriceClient;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.json.JSONArray;
@@ -64,7 +65,18 @@ public class OrderInfoService {
     @Autowired
     StringRedisTemplate stringRedisTemplate;
 
+    @Autowired
+    ServiceDriverUserClient serviceDriverUserClient;
+
     public ResponseResult add(OrderRequest orderRequest) {
+
+        // 测试当前城市是否有可用的司机
+        ResponseResult<Boolean> availableDriver = serviceDriverUserClient.isAvailableDriver(orderRequest.getAddress());
+        log.info("测试城市是否有司机结果："+availableDriver.getData());
+        if (!availableDriver.getData()){
+            return ResponseResult.fail(CommonStatusEnum.CITY_DRIVER_EMPTY.getCode(),CommonStatusEnum.CITY_DRIVER_EMPTY.getValue());
+        }
+
         //判断当前计价规则是否为最新版本
         PriceRuleIsNewRequest priceRuleIsNewRequest = new PriceRuleIsNewRequest();
         priceRuleIsNewRequest.setFareType(orderRequest.getFareType());
