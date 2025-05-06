@@ -1,14 +1,12 @@
 package com.msb.apipassenger.service;
 
 import com.msb.internalcommon.constant.CommonStatusEnum;
-import com.msb.internalcommon.constant.IdentityConstant;
 import com.msb.internalcommon.constant.TokenTypeConstant;
 import com.msb.internalcommon.dto.ResponseResult;
 import com.msb.internalcommon.dto.TokenResult;
 import com.msb.internalcommon.responese.TokenResponse;
 import com.msb.internalcommon.util.JwtUtils;
 import com.msb.internalcommon.util.RedisPrefixUtils;
-import jdk.nashorn.internal.objects.NativeUint8Array;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;

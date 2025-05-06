@@ -3,6 +3,7 @@ package com.msb.service;
 import com.msb.internalcommon.dto.ResponseResult;
 import com.msb.internalcommon.responese.TerminalResponse;
 //import com.msb.internalcommon.responese.TrsearchResponse;
+import com.msb.internalcommon.responese.TrsearchResponse;
 import com.msb.remote.TerminalClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,10 +26,10 @@ public class TerminalService {
 
         return terminalClient.aroundsearch(center,radius);
     }
-//
-//    public ResponseResult<TrsearchResponse> trsearch(String tid , Long starttime , Long endtime){
-//
-//        return terminalClient.trsearch(tid,starttime,endtime);
-//    }
+
+    public ResponseResult<TrsearchResponse> trsearch(String tid , Long starttime , Long endtime){
+
+        return terminalClient.trsearch(tid,starttime,endtime);
+    }
 
 }

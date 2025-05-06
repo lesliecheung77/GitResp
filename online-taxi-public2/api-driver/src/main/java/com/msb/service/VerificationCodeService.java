@@ -2,11 +2,8 @@ package com.msb.service;
 
 import com.msb.internalcommon.constant.CommonStatusEnum;
 import com.msb.internalcommon.constant.DriverCarConstants;
-import com.msb.internalcommon.constant.IdentityConstant;
 import com.msb.internalcommon.constant.TokenTypeConstant;
-import com.msb.internalcommon.dto.DriverUser;
 import com.msb.internalcommon.dto.ResponseResult;
-import com.msb.internalcommon.request.VerificationCodeDTO;
 import com.msb.internalcommon.responese.DriverUserExistsResponse;
 import com.msb.internalcommon.responese.NumberCodeResponese;
 import com.msb.internalcommon.responese.TokenResponse;
@@ -16,7 +13,6 @@ import com.msb.remote.UserDriverClient;
 import com.msb.remote.VerificationCodeClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 

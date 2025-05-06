@@ -3,6 +3,7 @@ package com.msb.controller;
 import com.msb.internalcommon.dto.ResponseResult;
 import com.msb.internalcommon.responese.TerminalResponse;
 //import com.msb.internalcommon.responese.TrsearchResponse;
+import com.msb.internalcommon.responese.TrsearchResponse;
 import com.msb.service.TerminalService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -40,17 +41,17 @@ public class TerminalController {
 
         return terminalService.aroundsearch(center,radius);
     }
-//
-//    /**
-//     * 轨迹查询
-//     * @param tid
-//     * @param starttime
-//     * @param endtime
-//     * @return
-//     */
-//    @PostMapping("/trsearch")
-//    public ResponseResult<TrsearchResponse> trsearch(String tid, Long starttime , Long endtime){
-//
-//        return terminalService.trsearch(tid,starttime,endtime);
-//    }
+
+    /**
+     * 轨迹查询
+     * @param tid
+     * @param starttime
+     * @param endtime
+     * @return
+     */
+    @PostMapping("/trsearch")
+    public ResponseResult<TrsearchResponse> trsearch(String tid, Long starttime , Long endtime){
+
+        return terminalService.trsearch(tid,starttime,endtime);
+    }
 }
