@@ -495,7 +495,7 @@ public class OrderInfoService {
         System.out.println("结束时间："+endtime);
 
         // 1668078028000l,测试的时候不要跨天
-        ResponseResult<TrsearchResponse> trsearch = serviceMapClient.trsearch(carById.getData().getTid(), starttime,endtime);
+        ResponseResult<TrsearchResponse> trsearch = serviceMapClient.trsearch(carById.getData().getTid(), starttime,1746498493000L);
         TrsearchResponse data = trsearch.getData();
         Long driveMile = data.getDriveMile();
         Long driveTime = data.getDriveTime();
@@ -512,6 +512,18 @@ public class OrderInfoService {
 
         orderInfoMapper.updateById(orderInfo);
         return ResponseResult.success();
+    }
+
+
+    public ResponseResult pushPayInfo(OrderRequest orderRequest) {
+
+        Long orderId = orderRequest.getOrderId();
+
+        OrderInfo orderInfo = orderInfoMapper.selectById(orderId);
+        orderInfo.setOrderStatus(OrderConstants.TO_START_PAY);
+        orderInfoMapper.updateById(orderInfo);
+        return ResponseResult.success();
+
     }
 }
 

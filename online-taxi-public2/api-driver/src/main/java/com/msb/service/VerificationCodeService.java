@@ -2,6 +2,7 @@ package com.msb.service;
 
 import com.msb.internalcommon.constant.CommonStatusEnum;
 import com.msb.internalcommon.constant.DriverCarConstants;
+import com.msb.internalcommon.constant.IdentityConstants;
 import com.msb.internalcommon.constant.TokenTypeConstant;
 import com.msb.internalcommon.dto.ResponseResult;
 import com.msb.internalcommon.responese.DriverUserExistsResponse;
@@ -47,7 +48,7 @@ public class VerificationCodeService {
         //调用第三方接口发送验证码,后续再做
 
         //存入redis，生成对应的key
-        String key = RedisPrefixUtils.generateKey(driverPhone, IdentityConstant.IDENTITY_DRIVER);
+        String key = RedisPrefixUtils.generateKey(driverPhone, IdentityConstants.DRIVER_IDENTITY);
         stringRedisTemplate.opsForValue().set(key,numberCode+"",2, TimeUnit.MINUTES);
         return ResponseResult.success("");
     }
@@ -60,7 +61,7 @@ public class VerificationCodeService {
      */
     public ResponseResult checkCode(String driverPhone, String verificationCode) {
         //1.根据手机号生成key,并根据Key获取value
-        String key = RedisPrefixUtils.generateKey(driverPhone,IdentityConstant.IDENTITY_DRIVER);
+        String key = RedisPrefixUtils.generateKey(driverPhone,IdentityConstants.DRIVER_IDENTITY);
         String valueCode = stringRedisTemplate.opsForValue().get(key);
         System.out.println("redis中的验证码:" + valueCode);
 
@@ -70,12 +71,12 @@ public class VerificationCodeService {
             return ResponseResult.fail(CommonStatusEnum.VERIFICATION_CODE_ERROR.getCode(),CommonStatusEnum.VERIFICATION_CODE_ERROR.getValue());
         }
         //4.颁发token，不应该使用魔法值，应该使用常量。两个token，一个通行accessToken,过期了通过refreshToken获得新的accessToken
-        String accessToken = JwtUtils.generatorToken(driverPhone, IdentityConstant.IDENTITY_DRIVER, TokenTypeConstant.JWT_TOKEN_ACCESSTOKEN);
-        String refreshToken = JwtUtils.generatorToken(driverPhone, IdentityConstant.IDENTITY_DRIVER, TokenTypeConstant.JWT_TOKEN_REFRESHTOKNE);
+        String accessToken = JwtUtils.generatorToken(driverPhone, IdentityConstants.DRIVER_IDENTITY, TokenTypeConstant.JWT_TOKEN_ACCESSTOKEN);
+        String refreshToken = JwtUtils.generatorToken(driverPhone, IdentityConstants.DRIVER_IDENTITY, TokenTypeConstant.JWT_TOKEN_REFRESHTOKNE);
 
         //5.将生成的accessToken、refreshToken以及它们对应的key存入redis
-        String tokenAccessKey = RedisPrefixUtils.generateTokenKey(driverPhone,IdentityConstant.IDENTITY_DRIVER,TokenTypeConstant.JWT_TOKEN_ACCESSTOKEN);
-        String tokenRefreshKey = RedisPrefixUtils.generateTokenKey(driverPhone,IdentityConstant.IDENTITY_DRIVER,TokenTypeConstant.JWT_TOKEN_REFRESHTOKNE);
+        String tokenAccessKey = RedisPrefixUtils.generateTokenKey(driverPhone,IdentityConstants.DRIVER_IDENTITY,TokenTypeConstant.JWT_TOKEN_ACCESSTOKEN);
+        String tokenRefreshKey = RedisPrefixUtils.generateTokenKey(driverPhone,IdentityConstants.DRIVER_IDENTITY,TokenTypeConstant.JWT_TOKEN_REFRESHTOKNE);
 
         stringRedisTemplate.opsForValue().set(tokenAccessKey,accessToken,30, TimeUnit.DAYS);
         stringRedisTemplate.opsForValue().set(tokenRefreshKey,refreshToken,31, TimeUnit.DAYS);
