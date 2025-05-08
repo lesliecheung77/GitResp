@@ -525,6 +525,21 @@ public class OrderInfoService {
         return ResponseResult.success();
 
     }
+
+    /**
+     * 支付
+     * @param orderRequest
+     * @return
+     */
+    public ResponseResult pay(OrderRequest orderRequest){
+
+        Long orderId = orderRequest.getOrderId();
+        OrderInfo orderInfo = orderInfoMapper.selectById(orderId);
+
+        orderInfo.setOrderStatus(OrderConstants.SUCCESS_PAY);
+        orderInfoMapper.updateById(orderInfo);
+        return ResponseResult.success();
+    }
 }
 
 
